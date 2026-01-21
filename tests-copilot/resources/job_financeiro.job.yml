@@ -1,0 +1,20 @@
+
+resources:
+  jobs:
+    financeiro_trusted_job:
+      name: financeiro_trusted_job
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"
+        timezone_id: America/Sao_Paulo
+        pause_status: UNPAUSED
+      tasks:
+        - task_key: run_financeiro_trusted
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.financeiro_trusted.id}
+            full_refresh: false
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
+      permissions:
+        - group_name: "grp_engenharia_dados_db_avancado"
+          level: "CAN_MANAGE_RUN"
