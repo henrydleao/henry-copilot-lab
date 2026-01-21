@@ -1,0 +1,13 @@
+
+resources:
+  pipelines:
+    financeiro_trusted:
+      name: financeiro_trusted
+      libraries:
+        - notebook:
+            path: /tests-copilot/dlt/tb_mov_vendas.ipynb
+      schema: financeiro
+      photon: false
+      catalog: prd_raw_adls
+      serverless: true
+      allow_duplicate_names: false
