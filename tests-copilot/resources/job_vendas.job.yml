@@ -1,0 +1,17 @@
+name: job_processamento_vendas
+
+resources:
+  jobs:
+    vendas_diario:
+      name: vendas_diario
+      tasks:
+        - task_key: processar_vendas
+          notebook_task:
+            notebook_path: /Repos/vendas/notebooks/processar_vendas_diarias
+          existing_cluster_id: "cluster-prod-001"
+        - task_key: gerar_relatorio
+          depends_on:
+            - task_key: processar_vendas
+          notebook_task:
+            notebook_path: /Workspace/Repos/vendas/relatorios/consolidacao
+      max_concurrent_runs: 1
