@@ -1,0 +1,18 @@
+name: pipeline_controle_estoque
+description: Pipeline para processamento de dados de estoque
+
+resources:
+  pipelines:
+    estoque_pipeline:
+      name: estoque_pipeline
+      libraries:
+        - notebook:
+            path: /Workspace/Repos/empresa/projeto/notebooks/processa_estoque
+      catalog: producao_estoque
+      schema: refined
+      photon: true
+      serverless: false
+      target: /mnt/refined/estoque_output
+      configuration:
+        caminho_bronze: "/dbfs/mnt/bronze_estoque"
+        catalogo_destino: "refined_estoque"
