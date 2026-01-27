@@ -27,10 +27,10 @@
 | 2 | 12 | `dt_ultima_atualizacao STRING` deveria ser TIMESTAMP | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 3 | 17-19 | `SELECT *` em query persistente | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 4 | 17 | Bronze → Refined direto (pula Trusted) | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
-| 5 | 21-22 | `UPDATE` sem `WHERE` específico | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
-| 6 | 24 | `DELETE` sem `WHERE` | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 5 | 21-22 | `UPDATE` sem `WHERE` específico | ☐ ✅ ☐ ⚠️ ☐ ❌ | **CRÍTICO** |
+| 6 | 24 | `DELETE` sem `WHERE` | ☐ ✅ ☐ ⚠️ ☐ ❌ | **CRÍTICO** |
 
-**Subtotal:** ___/6 detectadas
+**Subtotal:** __6_/6 detectadas
 
 ---
 
@@ -39,12 +39,12 @@
 | # | Linha | Violação | Detectado? | Observações |
 |---|-------|----------|------------|-------------|
 | 7 | 10 | `producao_vendas` - catálogo hardcoded | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
-| 8 | 16 | Bronze → Refined direto | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 8 | 16 | Bronze → Refined direto | ☐ ✅ ☐ ⚠️ ☐ ❌ | **CRÍTICO** |
 | 9 | 17 | `JOIN ... ON ... LIKE` - operador incorreto | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 10 | 22 | `temp_vendas_2025` - prefixo temporário | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 11 | 23-31 | Queries aninhadas excessivas (3 níveis) | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 
-**Subtotal:** ___/5 detectadas
+**Subtotal:** _5__/5 detectadas
 
 ---
 
@@ -59,7 +59,7 @@
 | 16 | 28 | `RAND()` - não determinístico | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 17 | 31 | Bronze → Trusted sem DLT | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 
-**Subtotal:** ___/6 detectadas
+**Subtotal:** __6_/6 detectadas
 
 ---
 
@@ -68,14 +68,14 @@
 | # | Linha | Violação | Detectado? | Observações |
 |---|-------|----------|------------|-------------|
 | 18 | 1-10 | Cabeçalho fora de ordem | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
-| 19 | 1 | `Autor: Fulano` - nome genérico | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 19 | 1 | `Autor: Fulano` - nome genérico | ☐ ✅ ☐ ⚠️ X ❌ | |
 | 20 | 2 | `Objetivo` antes de `Data` | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 21 | 10 | `Camada: raw` (deveria ser Bronze) | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 22 | 10-17 | `Projeto` e `Camada` no final | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 23 | 11-17 | Tabela sem comentários de coluna | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 24 | 13 | `qtd_data` - nome confuso | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 
-**Subtotal:** ___/7 detectadas
+**Subtotal:** _6__/7 detectadas
 
 ---
 
@@ -87,12 +87,12 @@
 | 26 | 6 | Path hardcoded `/dbfs/mnt/producao/...` | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 27 | 6 | `inferSchema=True` sem validação | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 28 | 10 | Path hardcoded `/mnt/refined/...` | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
-| 29 | 12 | Bronze → Refined direto | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 29 | 12 | Bronze → Refined direto | ☐ ✅ ☐ ⚠️ ☐ ❌ | **CRÍTICO** |
 | 30 | 12-13 | Transformação Refined sem DLT | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
-| 31 | 15 | `refined.estoque_consolidado` - catálogo implícito | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
-| 32 | 1-15 | Sem StructType/schema explícito | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 31 | 15 | `refined.estoque_consolidado` - catálogo implícito | ☐ ✅ ☐ ⚠️ X ❌ | |
+| 32 | 1-15 | Sem StructType/schema explícito | ☐ ✅ ☐ ⚠️ X ❌ | |
 
-**Subtotal:** ___/8 detectadas (nota: item #25 conta como 1)
+**Subtotal:** _6__/8 detectadas (nota: item #25 conta como 1)
 
 ---
 
@@ -106,10 +106,10 @@
 | 36 | 24 | `tmp_clientes_import_2026` - nome temporário | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 37 | 29-34 | Path absoluto `/Workspace/Repos/...` | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 38 | 29-34 | `cluster-fixo-123` hardcoded | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
-| 39 | 1-34 | Sem validação Pandera | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 39 | 1-34 | Sem validação Pandera | ☐ ✅ ☐ ⚠️ X ❌ | |
 | 40 | 1-34 | Sem StructType explícito | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 
-**Subtotal:** ___/8 detectadas
+**Subtotal:** _7__/8 detectadas
 
 ---
 
@@ -125,7 +125,7 @@
 | 46 | 14 | `qtd_data` - nome confuso | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 47 | 23 | `sub_sistema: None` - metadata incompleta | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 
-**Subtotal:** ___/7 detectadas
+**Subtotal:** _7__/7 detectadas
 
 ---
 
@@ -133,14 +133,14 @@
 
 | # | Célula | Violação | Detectado? | Observações |
 |---|--------|----------|------------|-------------|
-| 48 | 1 | Sem cabeçalho obrigatório | ☐ ✅ ☐ ⚠️ ☐ ❌ | **CRÍTICO** |
-| 49 | 2, ln 5 | Não especifica camada bronze | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 48 | 1 | Sem cabeçalho obrigatório | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 49 | 2, ln 5 | Não especifica camada bronze | ☐ ✅ ☐ ⚠️ X ❌ | |
 | 50 | 2, ln 6 | `tb_stg_...` sem prefixo de camada | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 51 | 2, ln 8 | `id_cliente` - nome abreviado | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 52 | 2, ln 8 | `qtd_data` - nome confuso | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 53 | 2, ln 8 | `num_valor_total` - prefixo desnecessário | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 
-**Subtotal:** ___/6 detectadas
+**Subtotal:** _5__/6 detectadas
 
 ---
 
@@ -148,13 +148,13 @@
 
 | # | Célula | Violação | Detectado? | Observações |
 |---|--------|----------|------------|-------------|
-| 54 | 1 | Tabela com apenas 2 tags (limite mínimo) | ☐ ✅ ☐ ⚠️ ☐ ❌ | **CRÍTICO** |
-| 55 | 1 | Coluna `id_cliente` com 3 tags (mín: 6) | ☐ ✅ ☐ ⚠️ ☐ ❌ | **CRÍTICO** |
-| 56 | 1 | Colunas `qtd_data` e `num_valor_total` sem tags | ☐ ✅ ☐ ⚠️ ☐ ❌ | **CRÍTICO** |
+| 54 | 1 | Tabela com apenas 2 tags (limite mínimo) | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 55 | 1 | Coluna `id_cliente` com 3 tags (mín: 6) | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 56 | 1 | Colunas `qtd_data` e `num_valor_total` sem tags | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 57 | All | Sem descrição textual da tabela | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 58 | All | Sem metadados estruturados | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 
-**Subtotal:** ___/5 detectadas
+**Subtotal:** _5__/5 detectadas
 
 ---
 
@@ -171,7 +171,7 @@
 | 65 | 16 | `catalogo_destino: "refined_estoque"` - hardcoded | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 66 | Nome | Nome de arquivo não segue padrão | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 
-**Subtotal:** ___/8 detectadas
+**Subtotal:** _8__/8 detectadas
 
 ---
 
@@ -179,12 +179,12 @@
 
 | # | Linha | Violação | Detectado? | Observações |
 |---|-------|----------|------------|-------------|
-| 67 | 1 | Sem campo `name:` no nível raiz | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
+| 67 | 1 | Sem campo `name:` no nível raiz | ☐ ✅ ☐ ⚠️ X ❌ | |
 | 68 | 8 | Path relativo incorreto | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 69 | 9 | `schema: financeiro` - hardcoded | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 70 | 10 | `catalog: prd_raw_adls` - hardcoded | ☐ ✅ ☐ ⚠️ ☐ ❌ | **CRÍTICO** |
 
-**Subtotal:** ___/4 detectadas
+**Subtotal:** _3__/4 detectadas
 
 ---
 
@@ -198,7 +198,7 @@
 | 74 | 11 | `/Workspace/Repos/...` - path absoluto | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 | 75 | 9 | `existing_cluster_id: "cluster-prod-001"` - hardcoded | ☐ ✅ ☐ ⚠️ ☐ ❌ | |
 
-**Subtotal:** ___/5 detectadas
+**Subtotal:** _5__/5 detectadas
 
 ---
 
@@ -217,12 +217,12 @@
 
 | Categoria | Detectadas | Total | % |
 |-----------|------------|-------|---|
-| **SQL** | ___/24 | 24 | ___% |
-| **Python** | ___/23 | 23 | ___% |
-| **Notebooks** | ___/11 | 11 | ___% |
-| **YAML** | ___/17 | 17 | ___% |
+| **SQL** | _23_/24 | 24 | _95.8__% |
+| **Python** | _20__/23 | 23 | _86.9__% |
+| **Notebooks** | 10__/11 | 11 | _90__% |
+| **YAML** | _16__/17 | 17 | _94.11__% |
 | **Exemplo Correto** | ☐ Passou | 1 | - |
-| **TOTAL GERAL** | **___/75** | **75** | **___%** |
+| **TOTAL GERAL** | **__69_/75** | **75** | **__92_%** |
 
 ### Detecções por Severidade
 
