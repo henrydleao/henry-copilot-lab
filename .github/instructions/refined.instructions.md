@@ -2,9 +2,9 @@
 applyTo: "**/*.{py,sql}"
 ---
 
-# Regras da Camada REFINED (para code review)
+# Norma – Camada REFINED no Data Lakehouse com Databricks (para code review)
 
-Estas instruções focam somente em regras **verificáveis no código** ao criar/alterar objetos na camada REFINED.
+Este prompt contém somente itens do texto da norma REFINED que são **verificáveis no code review** (nomenclatura e sintaxes).
 
 ## 1) Nomenclatura geral
 
@@ -24,7 +24,7 @@ Deve utilizar:
 Importante:
 - ¹ Alinhamento com Governança de Dados para inclusão do termo na planilha de definição de siglas e termos.
 
-## 3) Esquema
+## 2) Esquema
 
 Sintaxe: `<domínio-de-dados>`
 
@@ -33,7 +33,7 @@ Exemplos:
 - Regulacao
 - operacao
 
-## 4) Tabela
+## 3) Tabela
 
 Sintaxe: `tb_<tipo-lógico-tb-refined>_<finalidade-tb>`
 
@@ -43,7 +43,17 @@ Exemplos:
 - tb_vis_fornecedor_insumo_quimico
 - tb_360_cliente
 
-## 5) Coluna
+Parâmetro `<tipo-lógico-tb-refined>` (valores):
+- `emd` – Entrada para o modelo de Machine Learning
+- `smd` – Saída do modelo de Machine Learning
+- `vis` – Visão de negócio (painel e relatório conectam-se nesse tipo de tabela)
+- `360` – Visão 360º de negócio
+
+Parâmetro `<finalidade-tb>`:
+- Texto livre com foco em identificar a tabela tratada
+- Não é recomendado abreviar palavras; abreviar somente termos amplamente conhecidos (ex.: cpf) ou de uso comum ao negócio (planilha de termos e siglas)
+
+## 4) Coluna
 
 Sintaxe: `<tipo-lógico-coluna>[_<complemento_estrutura_complexa>]_<finalidade-coluna>`
 
@@ -58,53 +68,9 @@ Exemplos:
 - est_json_hidrometro_inteligente
 - dat_pagamento
 
-## 6) Origem e destino (quando aplicável ao código)
-
-Se o código declarar explicitamente origem/destino de camada:
-- Origem permitida: TRUSTED e/ou REFINED
-- Destino permitido: REFINED
-
-## 11) Parâmetros
-
-### 11.1) `<domínio>`
-
-Na planilha de domínios, a coluna com o nome “Assunto” contém o nome dos domínios possíveis.
-
-Utilizado nas sintaxes:
-- Esquema
-
-### 11.2) `<domínio-de-dados>`
-
-Na planilha de domínios, a coluna com o nome “Assunto” contém o nome dos domínios possíveis.
-
-Importante: lembre-se que ao trazer o nome do domínio da planilha deve-se aplicar as regras de nomenclatura geral para o Databricks.
-
-Utilizado nas sintaxes:
-- Esquema
-
-### 11.3) `<tipo-lógico-tb-refined>`
-
-- `emd` – Entrada para o modelo de Machine Learning
-- `smd` – Saída do modelo de Machine Learning
-- `vis` – Visão de negócio (painel e relatório conectam-se nesse tipo de tabela)
-- `360` – Visão 360º de negócio
-
-Utilizado nas sintaxes:
-- Tabela
-
-### 11.4) `<finalidade-tb>`
-
-Texto livre com o foco em identificar a tabela tratada.
-
-Importante: não é recomendado abreviar palavras. Somente utilize abreviações para termos amplamente conhecidos pela sociedade (exemplo: cpf), ou de uso comum ao negócio (deve estar na planilha de termos e siglas).
-
-Utilizado nas sintaxes:
-- Tabela
-
-### 11.5) `<tipo-lógico-coluna>`
+Parâmetro `<tipo-lógico-coluna>`:
 
 Os tipos lógicos abaixo representam o conteúdo do dado de uma coluna, e não o tipo em si da coluna (data type):
-
 - `num` – Número Qualitativo
   - Tipos numéricos: TINYINT, SMALLINT, INT, BIGINT, FLOAT, DOUBLE, DECIMAL
   - Tipo de texto que representa um número qualitativo: STRING
@@ -118,28 +84,25 @@ Os tipos lógicos abaixo representam o conteúdo do dado de uma coluna, e não o
 - `dat` – Data
   - Tipos de data: DATE, TIMESTAMP, TIMESTAMP_NTZ, INTERVAL
 
-Utilizado nas sintaxes:
-- Coluna
-
-### 11.6) `<complemento_estrutura_complexa>` (opcional)
-
-1. Somente utilizar esse parâmetro quando o tipo lógico da coluna for de Estrutura Complexa (`est`).
-2. Coloque a extensão ou um texto que identifique qual o tipo da estrutura complexa (json, xml, etc).
+Parâmetro `<complemento_estrutura_complexa>` (opcional):
+- Somente utilizar quando o tipo lógico da coluna for de Estrutura Complexa (`est`)
+- Coloque a extensão ou um texto que identifique qual o tipo da estrutura complexa (json, xml, etc)
 
 Exemplos:
 - est_json_hidrometro_inteligente
 - est_xml_hidrometro_inteligente
 
-Utilizado nas sintaxes:
-- Coluna
+Parâmetro `<finalidade-coluna>`:
+- Texto livre com foco em identificar o objetivo da coluna tratada
+- Não é recomendado abreviar palavras; abreviar somente termos amplamente conhecidos (ex.: cpf) ou de uso comum ao negócio (planilha de termos e siglas)
 
-### 11.7) `<finalidade-coluna>`
+## 5) Origem dos dados na camada
 
-Texto livre com o foco em identificar o objetivo da coluna tratada.
+- Camada TRUSTED
+- Camada REFINED
 
-Importante: não é recomendado abreviar palavras. Somente utilize abreviações para termos amplamente conhecidos pela sociedade (exemplo: cpf), ou de uso comum ao negócio (deve estar na planilha de termos e siglas).
+## 6) Destino dos dados da camada
 
-Utilizado nas sintaxes:
-- Coluna
+- Camada REFINED
 
 

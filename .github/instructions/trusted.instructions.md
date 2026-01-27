@@ -2,213 +2,101 @@
 applyTo: "**/*.{py,sql}"
 ---
 
-# Regras de Tags no Databricks (para code review)
+# Norma – Camada TRUSTED no Data Lakehouse com Databricks (para code review)
 
-Estas instruções focam somente em regras **verificáveis no código** ao criar/alterar tags (metadados) em Databricks.
+Estas instruções devem conter somente regras **objetivamente verificáveis no code review** com base no texto da norma da camada TRUSTED.
 
-## 1) Chaves (nomes) das tags
+## 1) Nomenclatura geral
 
-Regras de nomenclatura (quando o código declarar chaves de tag):
-- Deve estar em língua inglesa
-- Deve usar PascalCase (primeira letra de cada palavra em maiúscula)
-- Deve estar no singular
-- Não deve conter acentuação, caractere especial ou espaço
+Deve utilizar:
+- letras minúsculas
+- no singular¹
+- sem acentuação
+- sem caractere especial
+- símbolo "_" como separador de palavras
+- sem preposição
+- sem artigo
+- sem pronome
+- sem interjeição
+- sem conjunção
+- abreviação somente para termos de conhecimento amplo na sociedade ou pelo negócio²
 
-Chaves permitidas:
-- Application
-- Confidentiality
-- Cluster
-- DataAnalyticsTeam
-- DataDomain
-- DataLayer
-- Environment
-- QualityCertificate
-- Partition
-- PK
-- Privacy
-- UpdateFrequency
-- LoadType
-- DataFlowTechnology
-- DataFlowName
+Importante:
+- ¹ Exceção para nome de domínio de dados, que pode usar o plural quando o nome do domínio está no plural.
+- ² Alinhamento com Governança de Dados para inclusão do termo na planilha de definição de siglas e termos.
 
-## 2) Valores das tags
+## 2) Esquema
 
-Regras de nomenclatura (quando o código declarar valores de tag):
-- Deve estar em língua portuguesa (exceto nome de time em Data Analytics & AI)
-- Deve estar em letras minúsculas
-- Deve estar no singular (não se aplica para domínio de dados ou nome de time em Data Analytics & AI)
-- Não deve conter acentuação ou caractere especial
-- Deve usar "_" como separador de palavras
-- Abreviação somente para termos amplamente conhecidos (ex.: cpf) ou termos alinhados com Governança de Dados
+Sintaxe: `<domínio>`
 
-## 3) Valores permitidos por chave
+Exemplos:
+- juridico
+- regulacao
+- operacao
 
-### 5.1) Application
+## 3) Tabela
 
-O conteúdo do marcador (tag) deve identificar a núvem do Databricks.
+Sintaxe: `tb_<tipo-lógico-tb-trusted>_<finalidade-tb>`
 
-Valores permitidos:
-- `adb` (Azure Databricks)
-- `gdb` (Google Databricks)
-- `wdb` (AWS Databricks)
+Exemplos:
+- tb_dom_tipo_cliente
+- tb_cad_fornecedor
+- tb_dim_cliente
+- tb_fat_consumo_agua
 
-### 5.2) Confidentiality
+Parâmetro `<tipo-lógico-tb-trusted>` (valores permitidos):
+- `cad` – Cadastro
+- `dim` – Dimensão
+- `dom` – Domínio
+- `mov` – Movimento
+- `fat` – Fato
 
-O conteúdo do marcador (tag) deve identificar o nível de confidencialidade do dado.
+Parâmetro `<finalidade-tb>`:
+- Texto livre com foco em identificar o objetivo da tabela tratada
+- Não é recomendado abreviar palavras; abreviar somente termos amplamente conhecidos (ex.: cpf) ou de uso comum ao negócio (na planilha de termos e siglas)
 
-Valores permitidos:
-- `publico`
-- `interno`
-- `restrito`
-- `confidencial`
+## 4) Coluna
 
-### 5.3) Cluster
+Sintaxe: `<tipo-lógico-coluna>[_<complemento_estrutura_complexa>]_<finalidade-coluna>`
 
-O conteúdo do marcador deve identificar:
-1) Se a tabela possui cluster ou não
-2) Se a coluna faz parte de um cluster ou não
+Exemplos:
+- qtd_quantidade_hidrometro
+- qtd_valor_conta_faturada
+- num_cpf
+- num_telefone (no banco o tipo é string, mas o conteúdo é convencionalmente número)
+- num_flag_instalacao_ativa (conteúdo é 0 ou 1)
+- txt_flag_instalacao_ativa (conteúdo do campo é “sim”/”não” ou “S”/”N”)
+- txt_endereco_cliente
+- est_json_hidrometro_inteligente
+- dat_pagamento
 
-Valores permitidos:
-- `sim`
-- `nao`
+Parâmetro `<tipo-lógico-coluna>`:
 
-### 5.4) DataAnalyticsTeam
+Os tipos lógicos abaixo representam o conteúdo do dado de uma coluna, e não o tipo em si da coluna (data type):
+- `num` – Número Qualitativo
+	- Tipos numéricos: TINYINT, SMALLINT, INT, BIGINT, FLOAT, DOUBLE, DECIMAL
+	- Tipo de texto que representa um número qualitativo: STRING
+- `qtd` – Número Quantitativo
+	- Tipos numéricos: TINYINT, SMALLINT, INT, BIGINT, FLOAT, DOUBLE, DECIMAL
+- `txt` – Texto
+	- Tipo de texto: STRING
+	- Tipo booleano: BOOLEAN
+- `est` – Estrutura Complexa
+	- Tipos de estrutura complexa: ARRAY, MAP, STRUCT, VARIANT, OBJECT
+- `dat` – Data
+	- Tipos de data: DATE, TIMESTAMP, TIMESTAMP_NTZ, INTERVAL
 
-O conteúdo do marcador (tag) deve identificar qual o time de Data Analytics & AI é responsável pelo esquema da camada de sandbox dentro do ambiente de exploração e experimentação de dados.
+Parâmetro `<complemento_estrutura_complexa>` (opcional):
+- Somente utilizar quando o tipo lógico da coluna for Estrutura Complexa (`est`)
+- Coloque a extensão ou um texto que identifique qual o tipo da estrutura complexa (json, xml, etc)
 
-Valores permitidos:
-- `arquitetura_dados`
-- `ciencia_dados`
-- `digital_factory`
-- `engenharia_dados`
-- `governanca_dados`
-- `hiperautomacao`
+Parâmetro `<finalidade-coluna>`:
+- Texto livre com foco em identificar o objetivo da coluna tratada
+- Não é recomendado abreviar palavras; abreviar somente termos amplamente conhecidos (ex.: cpf) ou de uso comum ao negócio (na planilha de termos e siglas)
 
-### 5.5) DataDomain
+## 5) Origem e destino (somente quando explícito no código)
 
-O conteúdo do marcador (tag) deve identificar qual o domínio de dados que o objeto está relacionado.
-
-Valores permitidos:
-- `auditoria_interna`
-- `comunicacao`
-- `dados_referenciais`
-- `energia_eletrica`
-- `engenharia`
-- `estrategia_corporativa`
-- `experiencia_cliente`
-- `faturamento`
-- `financeiro`
-- `gente_gestao`
-- `juridico`
-- `logistica`
-- `observabilidade_dados`
-- `observabilidade_ti`
-- `operacao_agua`
-- `operacao_esgoto`
-- `operacao_estrategica`
-- `patrimonio`
-- `protecao_receita`
-- `regulacao`
-- `servicos_compartilhados`
-- `suprimentos`
-- `sustentabilidade`
-
-### 5.6) DataLayer
-
-O conteúdo do marcador (tag) deve identificar a camada lógica dos dados do data lakehouse que o objeto está associado.
-
-Camadas lógicas e valores permitidos:
-- `sbx` (Camada de dado exploratório - sandbox)
-- `stg` (Camada de dado temporário - staging)
-- `raw` (Camada de dado bruto - raw)
-- `tru` (Camada de dado confiável - trusted)
-- `ref` (Camada de dado refinado - refined)
-- `aud` (Camada de dado para auditoria - audit)
-
-### 5.7) Environment
-
-O conteúdo do marcador (tag) deve identificar o tipo de ambiente de dados no qual o objeto está localizado.
-
-Ambientes e valores permitidos:
-- `sbd` (Sandbox)
-- `dev` (Desenvolvimento)
-- `hml` (Homologação)
-- `prd` (Produção)
-
-### 5.8) QualityCertificate
-
-O conteúdo do marcador (tag) deve identificar o nível do certificado de qualidade dos dados no objeto associado.
-
-Valores permitidos:
-- `nao_certificado`
-- `bronze`
-- `prata`
-- `ouro`
-
-### 5.9) Partition
-
-O conteúdo do marcador (tag) deve identificar:
-1) Se a tabela possui particionamento ou não
-2) Se a coluna faz parte de um particionamento ou não
-
-Valores permitidos:
-- `sim`
-- `nao`
-
-### 5.10) PK
-
-O conteúdo do marcador (tag) deve identificar se a coluna faz parte de uma chave única ou não, ou seja, identifica um único registro na tabela.
-
-Valores permitidos:
-- `sim`
-- `nao`
-
-### 5.11) Privacy
-
-O conteúdo do marcador (tag) deve identificar se a tabela ou a coluna possuem dados de privacidade.
-
-Valores permitidos:
-- `nao_pessoal`
-- `pessoal`
-- `pessoal_sensivel`
-
-### 5.12) UpdateFrequency
-
-O conteúdo do marcador (tag) deve identificar a frequência que um objeto é atualizado.
-
-Valores permitidos:
-- `diario`
-- `semanal`
-- `quinzenal`
-- `mensal`
-- `bimestral`
-- `trimestral`
-- `quadrimestral`
-- `semestral`
-- `anual`
-- `sob_demanda`
-
-### 5.13) LoadType
-
-O conteúdo do marcador (tag) deve identificar o tipo de carga utilizada para criar ou atualizar uma tabela.
-
-Valores permitidos:
-- `completa`
-- `incremental`
-
-### 5.14) DataFlowTechnology
-
-O conteúdo do marcador (tag) deve identificar o tipo de tecnologia empregada no fluxo do processo execucional dos dados dentro do Databricks para executar jobs e/ou pipelines.
-
-Valores permitidos:
-- `notebook_orquestrador`
-- `lakeflow_connect`
-- `delta_sharing`
-
-### 5.15) DataFlowName
-
-O conteúdo do marcador (tag) deve identificar o nome do job e/ou pipeline referente ao fluxo do processo de execução.
-
-Regra:
-- Não existe valores pré-definidos; é necessário escrever o nome do processo de job ou pipeline que é executado
+Se o código declarar explicitamente origem/destino de camada:
+- Origem permitida: RAW e/ou TRUSTED
+- Destino permitido: TRUSTED e/ou REFINED
 

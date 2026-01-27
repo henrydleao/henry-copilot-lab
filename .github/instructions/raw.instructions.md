@@ -6,10 +6,10 @@ applyTo: "**/*.{py,sql}"
 
 Estas instruções focam somente em regras **verificáveis no código** ao criar/alterar objetos na camada RAW.
 
-## 1) Princípios de implementação
+## 1) Regras verificáveis na implementação
 
-- A camada RAW deve ser livre de transformações e tratamentos: dados devem permanecer equivalentes à origem sistêmica.
-- Para dados vindos de sistema (direto ou indireto via STAGING), a nomenclatura de tabela e coluna deve manter exatamente a origem.
+- Ser livre de transformações e tratamentos (dados iguais a origem sistêmica)
+- Respeitar a nomenclatura da tabela e colunas de origem de sistema
 
 ## 2) Nomenclatura geral
 
@@ -24,10 +24,7 @@ Deve utilizar:
 - sem pronome
 - sem interjeição
 - sem conjunção
-- abreviação somente para termos de conhecimento amplo na sociedade ou pelo negócio¹
-
-Importante:
-- ¹ Alinhamento com Governança de Dados para inclusão do termo na planilha de definição de siglas e termos.
+- abreviação somente para termos de conhecimento amplo na sociedade ou pelo negócio
 
 ## 3) Esquema
 
@@ -60,9 +57,12 @@ Observação 2: para origem de dados não estruturados ou semiestruturados, ser�
 
 ## 6) Origem e destino (quando aplicável ao código)
 
-Se o código declarar explicitamente origem/destino de camada:
-- Origem permitida: sistema de origem (direto ou indireto via STAGING) e/ou arquivo externo na camada STAGING
-- Destino permitido: TRUSTED
+Origem dos dados na camada:
+- Sistema de origem, direto ou indireto (STAGING)
+- Arquivo externo na camada temporária (STAGING)
+
+Destino dos dados da camada:
+- Camada TRUSTED
 
 ## 11) Parâmetros
 
