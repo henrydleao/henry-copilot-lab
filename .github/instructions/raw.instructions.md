@@ -2,35 +2,14 @@
 applyTo: "**/*.{py,sql}"
 ---
 
-# Norma – Camada RAW no Data Lakehouse com Databricks
+# Regras da Camada RAW (para code review)
 
-Estas instruções consolidam as **regras da camada RAW**.
+Estas instruções focam somente em regras **verificáveis no código** ao criar/alterar objetos na camada RAW.
 
-## 1) Camada bruta (RAW)
+## 1) Princípios de implementação
 
-Deve:
-- Ser utilizada exclusivamente para armazenamento de dados brutos
-- Ser o único ponto de entrada de dados sistêmicos com carga completa (full) no data lakehouse
-- Ser livre de transformações e tratamentos (dados iguais a origem sistêmica)
-- Ser organizada por sistema de origem
-- Respeitar a modelagem dos dados da origem
-- Respeitar a nomenclatura da tabela e colunas de origem de sistema
-- Conter dados aprovados pelo responsável do domínio
-- Conter objetos padronizados conforme as normas definidas
-- Proteger os dados por mascaramento e/ou anonimização
-- Proteger os dados por marcadores (tag) que requerem aprovação extra de acesso (lgpd, confidencialidade)
-- Proteger os dados através de controle de acesso
-- Ter um domínio de dados associado
-- Ter associado um certificado de qualidade para o consumo dos dados
-- Ter somente tabela como ativo de dados
-- Ter como origem de dados os sistemas (para carga completa)
-- Ter como origem de dados a camada STAGING (para carga incremental de sistema e arquivo externo)
-- Ter como destino de dados a camada TRUSTED
-- Ter acesso aprovado pelo responsável pelo domínio de dados para utilização
-- Ter acesso exclusivo para time técnico
-- Ter o desenvolvimento realizado atualmente pelo time de Data Analytics & AI
-- Ter os códigos utilizados versionados no Github
-- Existir nos ambientes de dados de desenvolvimento, homologação e produção
+- A camada RAW deve ser livre de transformações e tratamentos: dados devem permanecer equivalentes à origem sistêmica.
+- Para dados vindos de sistema (direto ou indireto via STAGING), a nomenclatura de tabela e coluna deve manter exatamente a origem.
 
 ## 2) Nomenclatura geral
 
@@ -79,29 +58,11 @@ Observação 1: para origem de dados de sistema não devemos utilizar a nomencla
 
 Observação 2: para origem de dados não estruturados ou semiestruturados, será necessário realizar uma estruturação mínima das informações em formato de colunas. Entretanto os dados aninhados devem permanecer aninhados.
 
-## 6) Acesso
+## 6) Origem e destino (quando aplicável ao código)
 
-Conforme prévia autorização do responsável pelo domínio associado aos dados nessa camada.
-
-Pode ser acessado por:
-- time técnico exclusivamente
-
-## 7) Origem dos dados na camada
-
-- Sistema de origem, direto ou indireto (STAGING)
-- Arquivo externo na camada temporária (STAGING)
-
-## 8) Destino dos dados da camada
-
-- Camada TRUSTED
-
-## 9) Ativo que pode conectar com dados dessa camada
-
-- Não se aplica
-
-## 10) Tipo produto de dados que pode existir nessa camada
-
-- Não existe
+Se o código declarar explicitamente origem/destino de camada:
+- Origem permitida: sistema de origem (direto ou indireto via STAGING) e/ou arquivo externo na camada STAGING
+- Destino permitido: TRUSTED
 
 ## 11) Parâmetros
 
@@ -128,10 +89,3 @@ Texto livre com o foco em identificar o objetivo da tabela tratada.
 Utilizado nas sintaxes:
 - Tabela
 
-## 12) Processos
-
-- Fluxo geral de dados através dos ambientes e das camadas no data lakehouse
-
-## 13) Conformidade
-
-O não cumprimento desta norma está sujeito a medidas disciplinares conforme regulamento interno.

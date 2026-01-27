@@ -2,34 +2,11 @@
 applyTo: "**/*.{py,sql}"
 ---
 
-# Norma – Camada Refined no Data Lakehouse com Databricks
+# Regras da Camada REFINED (para code review)
 
-Estas instruções consolidam as **regras da camada REFINED**.
+Estas instruções focam somente em regras **verificáveis no código** ao criar/alterar objetos na camada REFINED.
 
-## 1) Camada refinada (REFINED)
-
-Deve:
-- Ser a camada de origem para produtos de dados do tipo base relacional, machine learning, e visualização
-- Ser organizada por domínio de dados em conjunto com uma necessidade específica que pode ser representada dentro do domínio tratado
-- Ser utilizada exclusivamente para armazenamento de dados refinados
-- Ser considerada a camada de origem dos dados para ativos como painéis e relatórios
-- Conter dados aprovados pelo responsável do domínio
-- Conter objetos padronizados conforme as normas definidas
-- Conter dados validados e otimizados
-- Proteger os dados por mascaramento e/ou anonimização
-- Proteger os dados por marcadores (tag) que requerem aprovação extra de acesso (lgpd, confidencialidade)
-- Proteger os dados através de controle de acesso
-- Ter um domínio de dados associado
-- Ter os dados orientados por caso de uso
-- Ter associado um certificado de qualidade para o consumo dos dados
-- Ter como origem de dados a camada TRUSTED e/ou REFINED (importante: cuidado ao utilizar dados da camada refinada como origem, pois podem já conter informações com vieses aplicados para uma necessidade que representa o domínio tratado)
-- Ter como destino de dados a camada REFINED
-- Ter acesso aprovado pelo responsável pelo domínio de dados para utilização
-- Ter o desenvolvimento realizado atualmente pelo time de Data Analytics & AI
-- Ter os códigos utilizados versionados no Github
-- Existir nos ambientes de dados de desenvolvimento, homologação e produção
-
-## 2) Nomenclatura geral
+## 1) Nomenclatura geral
 
 Deve utilizar:
 - letras minúsculas
@@ -81,35 +58,11 @@ Exemplos:
 - est_json_hidrometro_inteligente
 - dat_pagamento
 
-## 6) Acesso
+## 6) Origem e destino (quando aplicável ao código)
 
-Conforme prévia autorização do responsável pelo domínio associado aos dados nessa camada.
-
-Pode ser acessado por:
-- time técnico
-- time representante do domínio de dados tratado
-
-## 7) Origem dos dados na camada
-
-- Camada TRUSTED
-- Camada REFINED
-
-## 8) Destino dos dados da camada
-
-- Camada REFINED
-
-## 9) Ativo que pode conectar com dados dessa camada
-
-- Tabela
-- Modelo de Machine Learning
-- Painel (dashboard)
-- Relatório (report)
-
-## 10) Tipo produto de dados que pode existir nessa camada
-
-- Base relacional
-- Machine Learning
-- Visualização
+Se o código declarar explicitamente origem/destino de camada:
+- Origem permitida: TRUSTED e/ou REFINED
+- Destino permitido: REFINED
 
 ## 11) Parâmetros
 
@@ -189,11 +142,4 @@ Importante: não é recomendado abreviar palavras. Somente utilize abreviações
 Utilizado nas sintaxes:
 - Coluna
 
-## 12) Processos
-
-- Fluxo geral de dados através dos ambientes e das camadas no data lakehouse
-
-## 13) Conformidade
-
-O não cumprimento desta norma está sujeito a medidas disciplinares conforme regulamento interno.
 

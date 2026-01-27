@@ -2,36 +2,19 @@
 applyTo: "**/*.{py,sql}"
 ---
 
-# Norma – Marcador de Dados (Tag) no Databricks
+# Regras de Tags no Databricks (para code review)
 
-Estas instruções consolidam as **regras de marcadores de dados (tags)** no Databricks.
+Estas instruções focam somente em regras **verificáveis no código** ao criar/alterar tags (metadados) em Databricks.
 
-## 1) Marcador de dados (tag)
+## 1) Chaves (nomes) das tags
 
-Deve:
-- Ter um nome que identifique a finalidade da tag
-- Separar os dados em categorias previamente especificadas
-- Conter informações que proporcionem o entendimento dos dados
+Regras de nomenclatura (quando o código declarar chaves de tag):
+- Deve estar em língua inglesa
+- Deve usar PascalCase (primeira letra de cada palavra em maiúscula)
+- Deve estar no singular
+- Não deve conter acentuação, caractere especial ou espaço
 
-## 2) Nomenclatura dos marcadores (nome da tag)
-
-Deve utilizar:
-- Língua inglesa
-- Letras maiúsculas para a primeira letra de cada palavra
-- Letras minúsculas para todas as palavras com exceção da primeira letra de cada palavra
-- No singular
-- Sem acentuação
-- Sem caractere especial
-- Sem espaço entre palavras
-- Sem preposição
-- Sem artigo
-- Sem pronome
-- Sem interjeição
-- Sem conjunção
-
-## 3) Tags no Databricks
-
-As tags no Databricks são:
+Chaves permitidas:
 - Application
 - Confidentiality
 - Cluster
@@ -48,28 +31,17 @@ As tags no Databricks são:
 - DataFlowTechnology
 - DataFlowName
 
-## 4) Nomenclatura do conteúdo dos marcadores (valor da tag)
+## 2) Valores das tags
 
-Deve utilizar:
-- Língua portuguesa¹
-- Letras minúsculas
-- No singular²
-- Sem acentuação
-- Sem caractere especial
-- Símbolo "_" como separador de palavras
-- Abreviação somente para termos de conhecimento amplo na sociedade ou pelo negócio³
-- Sem preposição
-- Sem artigo
-- Sem pronome
-- Sem interjeição
-- Sem conjunção
+Regras de nomenclatura (quando o código declarar valores de tag):
+- Deve estar em língua portuguesa (exceto nome de time em Data Analytics & AI)
+- Deve estar em letras minúsculas
+- Deve estar no singular (não se aplica para domínio de dados ou nome de time em Data Analytics & AI)
+- Não deve conter acentuação ou caractere especial
+- Deve usar "_" como separador de palavras
+- Abreviação somente para termos amplamente conhecidos (ex.: cpf) ou termos alinhados com Governança de Dados
 
-Importante:
-- ¹ Exceção para nome de time dentro de Data Analytics & AI
-- ² Não deve ser aplicado para domínio de dados ou nome de time em Data Analytics & AI
-- ³ Alinhamento com Governança de Dados para inclusão do termo na planilha de definição de siglas e termos
-
-## 5) Regras por tag
+## 3) Valores permitidos por chave
 
 ### 5.1) Application
 
@@ -239,8 +211,4 @@ O conteúdo do marcador (tag) deve identificar o nome do job e/ou pipeline refer
 
 Regra:
 - Não existe valores pré-definidos; é necessário escrever o nome do processo de job ou pipeline que é executado
-
-## 6) Conformidade
-
-O não cumprimento desta norma está sujeito a medidas disciplinares conforme regulamento interno.
 
