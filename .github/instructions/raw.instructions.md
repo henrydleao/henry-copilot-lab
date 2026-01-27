@@ -2,211 +2,136 @@
 applyTo: "**/*.{py,sql}"
 ---
 
-# Regras para Camada Bronze/RAW – Data Lakehouse
+# Norma – Camada RAW no Data Lakehouse com Databricks
 
-Estas instruções se aplicam a **arquivos que criam, modificam ou ingerem dados na camada Bronze/RAW**. O Copilot deve validar governança e qualidade desde a ingestão inicial.
+Estas instruções consolidam as **regras da camada RAW**.
 
-> **Importante**: Aplicar estas regras quando detectar no código ou metadados: `Camada: Bronze`, tabelas em schema `bronze.*`, ou processos de ingestão inicial.
+## 1) Camada bruta (RAW)
 
----
+Deve:
+- Ser utilizada exclusivamente para armazenamento de dados brutos
+- Ser o único ponto de entrada de dados sistêmicos com carga completa (full) no data lakehouse
+- Ser livre de transformações e tratamentos (dados iguais a origem sistêmica)
+- Ser organizada por sistema de origem
+- Respeitar a modelagem dos dados da origem
+- Respeitar a nomenclatura da tabela e colunas de origem de sistema
+- Conter dados aprovados pelo responsável do domínio
+- Conter objetos padronizados conforme as normas definidas
+- Proteger os dados por mascaramento e/ou anonimização
+- Proteger os dados por marcadores (tag) que requerem aprovação extra de acesso (lgpd, confidencialidade)
+- Proteger os dados através de controle de acesso
+- Ter um domínio de dados associado
+- Ter associado um certificado de qualidade para o consumo dos dados
+- Ter somente tabela como ativo de dados
+- Ter como origem de dados os sistemas (para carga completa)
+- Ter como origem de dados a camada STAGING (para carga incremental de sistema e arquivo externo)
+- Ter como destino de dados a camada TRUSTED
+- Ter acesso aprovado pelo responsável pelo domínio de dados para utilização
+- Ter acesso exclusivo para time técnico
+- Ter o desenvolvimento realizado atualmente pelo time de Data Analytics & AI
+- Ter os códigos utilizados versionados no Github
+- Existir nos ambientes de dados de desenvolvimento, homologação e produção
 
-## 1) Campos de Auditoria Obrigatórios
+## 2) Nomenclatura geral
 
-**Toda tabela Bronze deve incluir campos de controle:**
+Deve utilizar:
+- letras minúsculas
+- no singular
+- sem acentuação
+- sem caractere especial
+- símbolo "_" como separador de palavras
+- sem preposição
+- sem artigo
+- sem pronome
+- sem interjeição
+- sem conjunção
+- abreviação somente para termos de conhecimento amplo na sociedade ou pelo negócio¹
 
-```sql
--- SQL
-CREATE TABLE bronze.{tabela} (
-  -- colunas de negócio...
-  
-  -- CAMPOS OBRIGATÓRIOS DE AUDITORIA:
-  dt_carga TIMESTAMP COMMENT 'Data/hora da ingestão',
-  dt_processamento TIMESTAMP COMMENT 'Data/hora do processamento',
-  id_execucao STRING COMMENT 'Identificador único da execução/lote',
-  origem_sistema STRING COMMENT 'Sistema/fonte de origem dos dados'
-)
-```
+Importante:
+- ¹ Alinhamento com Governança de Dados para inclusão do termo na planilha de definição de siglas e termos.
 
-```python
-# Python/PySpark - Adicionar ao DataFrame
-from pyspark.sql import functions as F
+## 3) Esquema
 
-df = df.withColumn("dt_carga", F.current_timestamp()) \
-       .withColumn("dt_processamento", F.current_timestamp()) \
-       .withColumn("id_execucao", F.lit(execution_id)) \
-       .withColumn("origem_sistema", F.lit("SAP"))
-```
+Sintaxe: `<sistema>[_<modulo-sistema>]`
 
-**O Copilot deve:**
-- ✅ **Alertar** quando criar tabela Bronze sem estes 4 campos
-- ✅ **Sugerir** inclusão automática quando detectar ingestão de dados
+Exemplos:
+- vectora
+- conecta_wfm
+- sap_ecc_fi
 
----
+## 4) Tabela
 
-## 2) Formato de Persistência
+Sintaxe: deve seguir a lógica abaixo:
 
-**Obrigatório**: usar **Delta Lake** ou **Parquet** (nunca CSV/JSON em produção).
+- Se a origem do dado vem de um sistema, direto ou indireto (STAGING), então manter a nomenclatura da origem.
+- Senão o dado vem de um volume na camada STAGING (arquivo externo) e deve usar a sintaxe: `tb_stg_<finalidade-da-tabela>`.
 
-```python
-# ✅ CORRETO
-df.write.format("delta").save(path)
-df.write.format("parquet").save(path)
+Observação: para origem de dados de sistema não devemos utilizar a nomenclatura geral pois devemos seguir exatamente o nome da tabela como está definido no sistema de origem.
 
-# ❌ EVITAR (alertar em code review)
-df.write.format("csv").save(path)
-df.write.format("json").save(path)
-```
+## 5) Coluna
 
-**O Copilot deve:**
-- ❌ **Alertar** quando detectar `.format("csv")` ou `.format("json")` em tabelas Bronze
-- ✅ **Sugerir** migração para Delta/Parquet
+Sintaxe: deve seguir a lógica abaixo:
 
----
+- Se o dado vem de um sistema, direto ou indireto (STAGING), então manter a nomenclatura da origem.
+- Senão utilizar o padrão de sintaxe de coluna das camadas TRUSTED e REFINED.
 
-## 3) Compressão
+Observação 1: para origem de dados de sistema não devemos utilizar a nomenclatura geral pois devemos seguir exatamente o nome da coluna como está definido no sistema de origem.
 
-**Recomendado**: usar compressão **Snappy** (padrão) ou **ZSTD** (maior compressão).
+Observação 2: para origem de dados não estruturados ou semiestruturados, será necessário realizar uma estruturação mínima das informações em formato de colunas. Entretanto os dados aninhados devem permanecer aninhados.
 
-```python
-# ✅ BOAS PRÁTICAS
-df.write.format("parquet") \
-    .option("compression", "snappy") \
-    .save(path)
+## 6) Acesso
 
-# Ou para maior compressão
-.option("compression", "zstd")
-```
+Conforme prévia autorização do responsável pelo domínio associado aos dados nessa camada.
 
-**O Copilot deve:**
-- ✅ **Sugerir** definir compressão explicitamente quando ausente
+Pode ser acessado por:
+- time técnico exclusivamente
 
----
+## 7) Origem dos dados na camada
 
-## 4) Particionamento por Data de Carga
+- Sistema de origem, direto ou indireto (STAGING)
+- Arquivo externo na camada temporária (STAGING)
 
-**Obrigatório**: particionar tabelas Bronze por `dt_carga` (facilita reprocessamento e purga).
+## 8) Destino dos dados da camada
 
-```sql
--- SQL
-CREATE TABLE bronze.{tabela} (...)
-PARTITIONED BY (dt_carga)
-```
+- Camada TRUSTED
 
-```python
-# Python/PySpark
-df.write.format("delta") \
-    .partitionBy("dt_carga") \
-    .save(path)
-```
+## 9) Ativo que pode conectar com dados dessa camada
 
-**O Copilot deve:**
-- ✅ **Alertar** quando criar tabela Bronze sem particionamento
-- ✅ **Sugerir** `PARTITIONED BY (dt_carga)` ou `.partitionBy("dt_carga")`
+- Não se aplica
 
----
+## 10) Tipo produto de dados que pode existir nessa camada
 
-## 5) Validações de Qualidade na Ingestão
+- Não existe
 
-**Obrigatório**: incluir validações básicas em processos de ingestão.
+## 11) Parâmetros
 
-```python
-# VALIDAÇÕES MÍNIMAS EM BRONZE
-# 1. Contagem de registros
-count_origem = df_origem.count()
-count_destino = spark.table("bronze.tabela").count()
-assert count_destino >= count_origem, f"Perda de registros: {count_origem} → {count_destino}"
+### 11.1) `<sistema>`
 
-# 2. Detecção de duplicatas (quando aplicável)
-df_deduplicado = df.dropDuplicates(["id_primaria"])
-duplicatas = df.count() - df_deduplicado.count()
-if duplicatas > 0:
-    logger.warning(f"Removidas {duplicatas} duplicatas")
+Nome do sistema de origem dos dados fora do data lakehouse.
 
-# 3. Verificação de schema (evitar schema drift)
-assert df.schema == expected_schema, "Schema divergente da especificação"
-```
+Utilizado nas sintaxes:
+- Esquema
 
-**O Copilot deve:**
-- ✅ **Sugerir** validação de contagem em processos de ingestão
-- ✅ **Alertar** quando houver risco de duplicatas sem tratamento
-- ✅ **Recomendar** validação de schema quando detectar `.option("inferSchema", "true")`
+### 11.2) `<modulo-sistema>` (opcional)
 
----
+Nome que especifica um módulo do sistema.
 
-## 6) Nomenclatura de Tabelas Bronze
+Esse parâmetro deve ser utilizado quando os dados que serão ingeridos dentro do data lakehouse precisam ser identificados por módulo do sistema por ser mais específico, ou seja, não é o sistema como um todo.
 
-**Padrão obrigatório**: `{origem}_{entidade}` ou `{origem}_{tipo}_{entidade}`
+Utilizado nas sintaxes:
+- Esquema
 
-```sql
--- ✅ CORRETO
-CREATE TABLE bronze.sap_vendas_pedidos
-CREATE TABLE bronze.api_crm_clientes
-CREATE TABLE bronze.file_csv_estoque
+### 11.3) `<finalidade-da-tabela>`
 
--- ❌ EVITAR (nomes genéricos/opacos)
-CREATE TABLE bronze.tb_dados
-CREATE TABLE bronze.temp_import
-CREATE TABLE bronze.tabela1
-```
+Texto livre com o foco em identificar o objetivo da tabela tratada.
 
-**O Copilot deve:**
-- ❌ **Alertar** quando nome não identificar origem/sistema
-- ✅ **Sugerir** renomeação seguindo padrão `{origem}_{entidade}`
+Utilizado nas sintaxes:
+- Tabela
 
----
+## 12) Processos
 
-## 7) Estratégia de Carga (identificação)
+- Fluxo geral de dados através dos ambientes e das camadas no data lakehouse
 
-O Copilot deve **identificar e validar** a estratégia de carga no código:
+## 13) Conformidade
 
-```python
-# FULL LOAD (sobrescrever tudo)
-df.write.mode("overwrite").save(path)  # ✅ OK para full load
-
-# INCREMENTAL (apenas novos)
-df.write.mode("append").save(path)  # ✅ OK para incremental
-
-# UPSERT (merge)
-deltaTable.merge(df, "source.id = target.id") \
-    .whenMatchedUpdateAll() \
-    .whenNotMatchedInsertAll() \
-    .execute()  # ✅ OK para CDC/upsert
-```
-
-**O Copilot deve:**
-- ✅ Validar coerência: `mode("append")` sem validação de duplicatas → **alertar**
-- ✅ Sugerir documentação da estratégia no cabeçalho (campo "Objetivo")
-
----
-
-## 8) Revisão Rápida (Checklist para PR)
-
-- [ ] **4 campos obrigatórios** presentes: `dt_carga`, `dt_processamento`, `id_execucao`, `origem_sistema`?
-- [ ] **Formato**: Delta ou Parquet (não CSV/JSON)?
-- [ ] **Compressão**: Snappy ou ZSTD definida?
-- [ ] **Particionamento**: `PARTITIONED BY (dt_carga)` ou `.partitionBy("dt_carga")`?
-- [ ] **Validações**: contagem de registros, duplicatas, schema verificados?
-- [ ] **Nomenclatura**: `{origem}_{entidade}` seguida?
-- [ ] **Estratégia de carga**: documentada e coerente com `.mode()`?
-
----
-
-## 9) Anti‑padrões que o Copilot NÃO deve sugerir
-
-- ❌ Tabelas Bronze sem campos de auditoria (`dt_carga`, `dt_processamento`, etc.)
-- ❌ Persistência em CSV/JSON para dados de produção
-- ❌ Tabelas Bronze sem particionamento por data
-- ❌ Ingestão sem validação de contagem (origem vs. destino)
-- ❌ Nomes genéricos (`tb_dados`, `temp_*`) sem identificação de origem
-- ❌ `mode("append")` sem controle de duplicatas quando aplicável
-
----
-
-## 10) Integração com Outras Instruções
-
-Este arquivo **complementa** (não substitui) as regras de:
-- `python.instructions.md` → cabeçalho, segredos, DLT
-- `sql-instructions.instructions.md` → qualidade de SQL, comentários
-- `copilot-instructions.md` → fluxo bronze → trusted → refined
-
-**Em caso de dúvida**: regras de camada (este arquivo) têm **precedência** em aspectos de governança de dados.
+O não cumprimento desta norma está sujeito a medidas disciplinares conforme regulamento interno.
